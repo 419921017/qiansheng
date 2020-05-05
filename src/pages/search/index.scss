@@ -1,0 +1,103 @@
+.page-search {
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  .top-con {
+    padding: 0 24px;
+    background-color: #fff;
+    .page-search-bar.at-search-bar {
+      padding: 0;
+      &::after {
+        width: 0;
+      }
+      .at-search-bar__input-cnt {
+        height: 50px !important;
+        border: 1px solid #fdd67b;
+        border-radius: 0;
+        background-color: #fff;
+        .at-search-bar__placeholder-wrap {
+          height: 50px !important;
+
+          color: #fdd67b;
+          .at-icon.at-icon-search {
+            color: #fdd67b;
+          }
+          .at-search-bar__placeholder {
+            color: #fdd67b;
+          }
+        }
+        .at-search-bar__input {
+          height: 50px !important;
+        }
+      }
+      .at-search-bar__action {
+        padding: 0;
+        background-color: #fff;
+        color: #fe5336;
+      }
+    }
+  }
+  .page-search-hot {
+    padding: 24px;
+    background-color: #fff;
+    border-bottom: 20px solid #f8f8f8;
+    .hot-title {
+      height: 24px;
+      font-size: 24px;
+      color: rgba(0, 0, 0, 1);
+      margin-bottom: 40px;
+    }
+    .hot-options {
+      display: flex;
+      .hot-options-item {
+        height: 54px;
+        line-height: 54px;
+        padding-left: 24px;
+        padding-right: 24px;
+        border: 1px solid #afb0b0;
+        margin-right: 24px;
+      }
+    }
+  }
+  .page-search-history {
+    padding: 24px 24px ;
+    background-color: #fff;
+    .history-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      .left {
+        font-size: 24px;
+        color: rgba(0, 0, 0, 1);
+      }
+      .right {
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        .icon-rubbish {
+          width: 22px;
+          height: 22px;
+          background: url("./rubbish.png");
+          background-size: 100% 100%;
+          margin-right: 8px;
+        }
+        .right-des {
+          color: rgba(133, 132, 132, 1);
+        }
+      }
+    }
+    .hostory-content {
+      .hostory-item {
+        height: 24px;
+        margin-bottom: 18px;
+        font-size: 24px;
+        color: rgba(0, 0, 0, 1);
+      }
+      .des {
+        text-align: center;
+        color: rgba(133, 132, 132, 1);
+        font-size: 22px;
+      }
+    }
+  }
+}

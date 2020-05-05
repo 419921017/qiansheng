@@ -1,4 +1,74 @@
-.index {
-  flex-direction: column;
-  width: 100%;
+.index-container {
+  min-height: 100vh;
+  padding: 0 28px;
+  .search-con {
+    // height: 50px;
+    margin-bottom: 23px;
+  }
+  .swiper-con {
+    .swiper-item-con {
+      height: 284px;
+      background-color: #fff6ec;
+    }
+  }
+  .tab-link-con {
+    // height: 180px;
+    padding: 35px 0 25px;
+    display: flex;
+    justify-content: space-around;
+    .tab-link-item {
+      // flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      // justify-content: space-between;
+      .pic {
+        width: 101px;
+        height: 85px;
+        background-size: 100% 100%;
+        margin-bottom: 8px;
+
+      }
+      .des {
+        height: 26px;
+        font-size: 26px;
+        color: #000;
+      }
+    }
+  }
+  .warning {
+    height: 82px;
+    line-height: 65px;
+    background: url("./../../assets/index/warining.png");
+    background-size: 100% 100%;
+    padding-left: 24px;
+    display: flex;
+    .clock {
+      width: 58px;
+      height: 58px;
+      background: url("./../../assets/index/clock.png");
+      background-size: 100% 100%;
+      margin-right: 8px;
+    }
+    .text {
+      font-size: 30px;
+      color: #fff;
+    }
+  }
+  .sign {
+    height: 43px;
+    display: flex;
+    align-items: baseline;
+    .sign-left {
+      font-size: 36px;
+      color: #000;
+      font-weight: 600;
+      margin-right: 20px;
+    }
+    .sign-right {
+      font-size: 24px;
+      color: #db746e;
+      font-weight: 600;
+    }
+  }
 }

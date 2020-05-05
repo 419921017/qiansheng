@@ -1,6 +1,6 @@
-import { combineReducers } from 'redux'
-import counter from './counter'
+import { combineReducers } from "redux";
+import location from "./../pages/location/store/index";
 
 export default combineReducers({
-  counter
-})
+  location
+});
