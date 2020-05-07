@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text, Button } from "@tarojs/components";
+import { View, Button } from "@tarojs/components";
 
 import "./modal.scss";
 
@@ -9,15 +9,25 @@ class Modal extends Component {
     this.state = {};
   }
 
-  confirmClick = () => {
+  // state = {};
+
+  componentDidMount() {
+    Taro.hideTabBar({});
+  }
+
+  componentWillUnmount() {
+    Taro.showTabBar({});
+  }
+
+  onConfirmClick = () => {
     this.props.onConfirmCallback();
   };
 
-  cancelClick = () => {
+  onCancelClick = () => {
     this.props.onCancelCallback();
   };
 
-  authConfirmClick = e => {
+  onAuthConfirmClick = e => {
     this.props.onConfirmCallback(e.detail);
   };
 
@@ -26,29 +36,31 @@ class Modal extends Component {
   };
 
   render() {
-    const { title, contentText, cancelText, confirmText } = this.props;
+    const { title, contentText, cancelText, confirmText, isAuth } = this.props;
     return (
-      <View class="toplife_modal" onTouchMove={this.preventTouchMove}>
-        <View class="toplife_modal_content">
-          <View class="toplife_modal_title">{title}</View>
-          <View class="toplife_modal_text">{contentText}</View>
-          <View class="toplife_modal_btn">
-            <Button class="toplife_modal_btn_cancel" onClick={this.cancelClick}>
+      <View className="toplife_modal" onTouchMove={this.preventTouchMove}>
+        <View className="toplife_modal_content">
+          <View className="toplife_modal_title">{title}</View>
+          <View className="toplife_modal_text">{contentText}</View>
+          <View className="toplife_modal_btn">
+            <Button
+              className="toplife_modal_btn_cancel"
+              onClick={this.onCancelClick}
+            >
               {cancelText}
             </Button>
             {!isAuth ? (
               <Button
-                class="toplife_modal_btn_confirm"
-                onClick={this.confirmClick}
+                className="toplife_modal_btn_confirm"
+                onClick={this.onConfirmClick}
               >
                 {confirmText}
               </Button>
             ) : (
               <Button
-                class="toplife_modal_btn_confirm"
+                className="toplife_modal_btn_confirm"
                 openType="getUserInfo"
-                onGetuserinfo={this.authConfirmClick}
-                onClick={this.cancelClick}
+                onGetUserInfo={this.onAuthConfirmClick}
               >
                 授权
               </Button>

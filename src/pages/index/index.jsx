@@ -1,11 +1,18 @@
-import Taro from "@tarojs/taro";
+import Taro, { useState, useEffect } from "@tarojs/taro";
 import { View, Swiper, SwiperItem, Image } from "@tarojs/components";
+import Modal from "@components/WXLoginModal";
+import classnames from "classnames";
+
 // import { connect } from "@tarojs/redux";
 
 // import NavBar from "taro-navigationbar";
 // import { add, minus, asyncAdd } from "../../actions/counter";
-import SearchBar from "./../../components/SearchBar";
-import List from "./../../components/List";
+import SearchBar from "@components/SearchBar";
+import List from "@components/List";
+
+import { getUserInfo, getIsAuth, weappLogin } from "@/utils/wxLogin";
+import { businessBanner } from "@/api/indexPage";
+
 import info from "./../../assets/index/info.png";
 import pet from "./../../assets/index/pet.png";
 import master from "./../../assets/index/master.png";
@@ -37,11 +44,79 @@ const tabLinkList = [
 ];
 
 const Index = props => {
+  const [animationClass, setAnimationClass] = useState("");
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const [bannerList, setBannerList] = useState([]);
+
+  useEffect(() => {
+    showLoginModal();
+    getBusinessBanner();
+  }, []);
+
+  const hideAuthModal = () => {
+    setShowAuthModal(false);
+    Taro.setStorageSync("isHomeLongHideAuthModal", true);
+  };
   const handleToRoute = route => {
     Taro.navigateTo({
       url: `/pages/${route}/index`
     });
   };
+
+  const prcoessAuthResult = async userData => {
+    Taro.setStorageSync("isHomeLongHideAuthModal", true);
+    console.log("userData", userData);
+    if (userData && userData.userInfo) {
+      await weappLogin();
+    }
+
+    setShowAuthModal(false);
+  };
+
+  const showLoginModal = () => {
+    setTimeout(async () => {
+      const userData = await getUserInfo();
+      console.log("showLoginModal", userData);
+      try {
+        const res = Taro.getStorageSync("isHomeLongHideAuthModal");
+        const isHomeLongHideAuthModal = res.data;
+
+        let showAuthModal;
+        if (!userData.userInfo && !showAuthModal && !isHomeLongHideAuthModal) {
+          showAuthModal = true;
+        } else {
+          showAuthModal = false;
+        }
+        console.log("showAuthModal", showAuthModal);
+        setShowAuthModal(showAuthModal);
+        setAnimationClass("animation");
+      } catch (error) {
+        let showAuthModal;
+        if (!userData && !showAuthModal) {
+          showAuthModal = true;
+        } else {
+          showAuthModal = false;
+        }
+        console.log("showAuthModal", showAuthModal);
+
+        setShowAuthModal(showAuthModal);
+        setAnimationClass("animation");
+      }
+    }, 1000);
+    getIsAuth();
+  };
+
+  const getBusinessBanner = () => {
+    businessBanner()
+      .then(res => {
+        res && res.data && setBannerList(res.data);
+      })
+      .catch(() => {
+        setBannerList([]);
+      });
+  };
+
   const renderSwiper = () => {
     return (
       <Swiper
@@ -52,21 +127,34 @@ const Index = props => {
         indicatorDots
         autoplay
       >
-        <SwiperItem>
-          <View className="swiper-item-con">1</View>
-        </SwiperItem>
-        <SwiperItem>
-          <View className="swiper-item-con">2</View>
-        </SwiperItem>
-        <SwiperItem>
-          <View className="swiper-item-con">3</View>
-        </SwiperItem>
+        {bannerList &&
+          bannerList.length > 0 &&
+          bannerList.map(item => {
+            return (
+              <SwiperItem key={item.path}>
+                <View className="swiper-item-con">
+                  <Image src={item.path}></Image>
+                </View>
+              </SwiperItem>
+            );
+          })}
       </Swiper>
     );
   };
 
+  const indexClassNames = classnames("index-container", animationClass);
+
   return (
-    <View className="index-container">
+    <View className={indexClassNames}>
+      {showAuthModal && (
+        <Modal
+          title="授权提示"
+          contentText="牵绳邀您完成授权，寻宠寻主领养活动!"
+          onCancelCallback={hideAuthModal}
+          onConfirmCallback={prcoessAuthResult}
+          isAuth
+        />
+      )}
       <View className="search-con">
         <SearchBar />
       </View>

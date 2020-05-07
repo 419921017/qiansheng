@@ -1,10 +1,7 @@
 import Taro from "@tarojs/taro";
-import api from "./../http";
-import { API_WX_LOGIN, API_USER_USERINFO_BY_TOKEN } from "./../constants/api";
+import { oauth, createToken } from "@/api/user";
 import { getGlobalData } from "../constants/globalData.js";
 
-// const appid = "wx89e40641d50b0da9";
-// const secret = "6a158f77c8f2792f3c0a4e8f7f996884";
 const getUserInfo = async () => {
   const userData = Taro.getStorageSync("userData");
   if (userData) {
@@ -31,7 +28,7 @@ const getUserInfoByToken = async () => {
     return userInfoByToken;
   }
   try {
-    const userInfoByTokenData = await api.get(API_USER_USERINFO_BY_TOKEN, {});
+    const userInfoByTokenData = await createToken();
     console.log("userInfoByTokenData", userInfoByTokenData);
 
     Taro.setStorage({
@@ -41,40 +38,40 @@ const getUserInfoByToken = async () => {
     return userInfoByTokenData;
   } catch (e) {
     console.log(e);
-    console.log("通法登录获取用户信息接口故障");
+    console.log("登录获取用户信息接口故障");
     return {};
   }
 };
 
+
 const weappLogin = async (
-  before: () => void = () => {},
-  success: () => void = () => {},
-  after: any => void = () => {}
+  before = () => {},
+  success = () => {},
+  after = () => {}
 ) => {
   before();
   try {
     const { userInfo } = await getUserInfo();
     const { code } = await Taro.login();
-    console.log("weappLogin-userInfo", userInfo);
-    console.log("weappLogin-code", code);
 
     if (code) {
       Taro.setStorageSync("code", code);
-      api
-        .post(API_WX_LOGIN, {
-          code,
-          ...userInfo
-        })
-        .then(wxLoginRes => {
+      oauth({
+        code,
+        ...userInfo
+      })
+        .then(async wxLoginRes => {
           console.log("wxLoginRes", wxLoginRes);
           const {
-            data: { token }
+            data: { openid, token }
           } = wxLoginRes;
-          console.log("token", token);
-          Taro.setStorageSync("Authorization", token);
-          getUserInfoByToken();
+          console.log("openId", openid);
+          Taro.setStorageSync("openId", openid);
+          token && Taro.setStorageSync("Authorization", token);
+          token && Taro.setStorageSync("token", token);
+          // getUserInfoByToken();
           success();
-          return token;
+          return openid;
         })
         .catch(wxLoginErr => {
           after(wxLoginErr);
