@@ -1,5 +1,6 @@
 import Taro, { useState, useEffect } from "@tarojs/taro";
 import { View, Swiper, SwiperItem, Image } from "@tarojs/components";
+import { useSelector } from "@tarojs/redux";
 import Modal from "@components/WXLoginModal";
 import classnames from "classnames";
 
@@ -11,7 +12,10 @@ import SearchBar from "@components/SearchBar";
 import List from "@components/List";
 
 import { getUserInfo, getIsAuth, weappLogin } from "@/utils/wxLogin";
-import { businessBanner } from "@/api/indexPage";
+import {
+  businessBanner,
+  businessList as businessListApi
+} from "@/api/indexPage";
 
 import info from "./../../assets/index/info.png";
 import pet from "./../../assets/index/pet.png";
@@ -44,15 +48,23 @@ const tabLinkList = [
 ];
 
 const Index = props => {
+  const location = useSelector(state => state.location);
+  const { lat, lng } = location;
+
   const [animationClass, setAnimationClass] = useState("");
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const [bannerList, setBannerList] = useState([]);
+  const [businessList, setBussindessList] = useState([]);
 
   useEffect(() => {
     showLoginModal();
     getBusinessBanner();
   }, []);
+
+  useEffect(() => {
+    getBusinessList();
+  }, [lat, lng]);
 
   const hideAuthModal = () => {
     setShowAuthModal(false);
@@ -117,6 +129,20 @@ const Index = props => {
       });
   };
 
+  const getBusinessList = () => {
+    const params = {
+      lat,
+      lng
+    };
+    businessListApi(params)
+      .then(res => {
+        res && res.data && setBussindessList(res.data);
+      })
+      .catch(err => {
+        setBussindessList([]);
+      });
+  };
+
   const renderSwiper = () => {
     return (
       <Swiper
@@ -133,7 +159,10 @@ const Index = props => {
             return (
               <SwiperItem key={item.path}>
                 <View className="swiper-item-con">
-                  <Image src={item.path}></Image>
+                  <Image
+                    src={item.path}
+                    style={{ height: "100%", width: "284px" }}
+                  ></Image>
                 </View>
               </SwiperItem>
             );
@@ -183,7 +212,7 @@ const Index = props => {
         <View className="sign-right">they need your help</View>
       </View>
       <View className="list">
-        <List />
+        <List list={businessList} />
       </View>
     </View>
   );

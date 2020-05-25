@@ -3,7 +3,9 @@ import produce from "immer";
 import { CHANGE_LOCATION_NAME } from "./constants";
 
 const initState = {
-  locationName: "未知地点"
+  locationName: "未知地点",
+  lat: 99.999,
+  lng: 99.999
 };
 
 const reducer = (state = initState, action) => {
